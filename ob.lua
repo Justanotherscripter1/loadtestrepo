@@ -86,7 +86,7 @@ local function DrawESP(plr)
 local function project(part)
 	local pos, visible = Camera:WorldToViewportPoint(part.Position)
 	local dist = (Camera.CFrame.Position - part.Position).Magnitude
-	local offset = dist / 50 -- tweak the divisor to taste
+	local offset = dist / 1 -- tweak the divisor to taste
 	return Vector3.new(pos.X, pos.Y - offset, pos.Z), visible
 end
 
