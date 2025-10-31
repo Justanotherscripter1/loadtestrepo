@@ -84,12 +84,12 @@ local function DrawESP(plr)
 	end
 
 	--// helper projection with vertical correction
-	local function project(part)
-		local pos, visible = Camera:WorldToViewportPoint(part.Position)
-		local dist = (Camera.CFrame.Position - part.Position).Magnitude
-		local offset = dist * 0.03 -- tweak this to fix sinking
-		return Vector3.new(pos.X, pos.Y - offset, pos.Z), visible
-	end
+local function calcOffset(part)
+    local hrpPos = Camera:WorldToViewportPoint(part.Parent:FindFirstChild("HumanoidRootPart").Position)
+    local partPos = Camera:WorldToViewportPoint(part.Position)
+    return hrpPos.Y - partPos.Y
+end
+
 
 	-- Updater
 	local conn
