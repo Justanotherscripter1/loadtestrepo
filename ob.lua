@@ -39,7 +39,6 @@ local function DrawESP(plr)
 	local rigType = plr.Character.Humanoid.RigType
 	local isR15 = (rigType == Enum.HumanoidRigType.R15)
 
-	-- use same limb layout
 	if isR15 then
 		limbs = {
 			Head_UpperTorso = MakeLine(),
@@ -84,7 +83,15 @@ local function DrawESP(plr)
 		end
 	end
 
-	-- Updater (R15 shown here)
+	--// helper projection with vertical correction
+	local function project(part)
+		local pos, visible = Camera:WorldToViewportPoint(part.Position)
+		local dist = (Camera.CFrame.Position - part.Position).Magnitude
+		local offset = dist * 0.03 -- tweak this to fix sinking
+		return Vector3.new(pos.X, pos.Y - offset, pos.Z), visible
+	end
+
+	-- Updater
 	local conn
 	conn = game:GetService("RunService").RenderStepped:Connect(function()
 		local char = plr.Character
@@ -104,41 +111,41 @@ local function DrawESP(plr)
 		if not visible then SetVisible(false) return end
 
 		if isR15 then
-			local H = Camera:WorldToViewportPoint(char.Head.Position)
-			local UT = Camera:WorldToViewportPoint(char.UpperTorso.Position)
-			local LT = Camera:WorldToViewportPoint(char.LowerTorso.Position)
+			local H = project(char.Head)
+			local UT = project(char.UpperTorso)
+			local LT = project(char.LowerTorso)
 
-			local LUA = Camera:WorldToViewportPoint(char.LeftUpperArm.Position)
-			local LLA = Camera:WorldToViewportPoint(char.LeftLowerArm.Position)
-			local LH = Camera:WorldToViewportPoint(char.LeftHand.Position)
+			local LUA = project(char.LeftUpperArm)
+			local LLA = project(char.LeftLowerArm)
+			local LH = project(char.LeftHand)
 
-			local RUA = Camera:WorldToViewportPoint(char.RightUpperArm.Position)
-			local RLA = Camera:WorldToViewportPoint(char.RightLowerArm.Position)
-			local RH = Camera:WorldToViewportPoint(char.RightHand.Position)
+			local RUA = project(char.RightUpperArm)
+			local RLA = project(char.RightLowerArm)
+			local RH = project(char.RightHand)
 
-			local LUL = Camera:WorldToViewportPoint(char.LeftUpperLeg.Position)
-			local LLL = Camera:WorldToViewportPoint(char.LeftLowerLeg.Position)
-			local LF = Camera:WorldToViewportPoint(char.LeftFoot.Position)
+			local LUL = project(char.LeftUpperLeg)
+			local LLL = project(char.LeftLowerLeg)
+			local LF = project(char.LeftFoot)
 
-			local RUL = Camera:WorldToViewportPoint(char.RightUpperLeg.Position)
-			local RLL = Camera:WorldToViewportPoint(char.RightLowerLeg.Position)
-			local RF = Camera:WorldToViewportPoint(char.RightFoot.Position)
+			local RUL = project(char.RightUpperLeg)
+			local RLL = project(char.RightLowerLeg)
+			local RF = project(char.RightFoot)
 
 			-- connect bones
-			ConnectLine(limbs.Head_UpperTorso, Vector2.new(H.X, H.Y), Vector2.new(UT.X, UT.Y))
-			ConnectLine(limbs.UpperTorso_LowerTorso, Vector2.new(UT.X, UT.Y), Vector2.new(LT.X, LT.Y))
-			ConnectLine(limbs.UpperTorso_LeftUpperArm, Vector2.new(UT.X, UT.Y), Vector2.new(LUA.X, LUA.Y))
-			ConnectLine(limbs.LeftUpperArm_LeftLowerArm, Vector2.new(LUA.X, LUA.Y), Vector2.new(LLA.X, LLA.Y))
-			ConnectLine(limbs.LeftLowerArm_LeftHand, Vector2.new(LLA.X, LLA.Y), Vector2.new(LH.X, LH.Y))
-			ConnectLine(limbs.UpperTorso_RightUpperArm, Vector2.new(UT.X, UT.Y), Vector2.new(RUA.X, RUA.Y))
-			ConnectLine(limbs.RightUpperArm_RightLowerArm, Vector2.new(RUA.X, RUA.Y), Vector2.new(RLA.X, RLA.Y))
-			ConnectLine(limbs.RightLowerArm_RightHand, Vector2.new(RLA.X, RLA.Y), Vector2.new(RH.X, RH.Y))
-			ConnectLine(limbs.LowerTorso_LeftUpperLeg, Vector2.new(LT.X, LT.Y), Vector2.new(LUL.X, LUL.Y))
-			ConnectLine(limbs.LeftUpperLeg_LeftLowerLeg, Vector2.new(LUL.X, LUL.Y), Vector2.new(LLL.X, LLL.Y))
-			ConnectLine(limbs.LeftLowerLeg_LeftFoot, Vector2.new(LLL.X, LLL.Y), Vector2.new(LF.X, LF.Y))
-			ConnectLine(limbs.LowerTorso_RightUpperLeg, Vector2.new(LT.X, LT.Y), Vector2.new(RUL.X, RUL.Y))
-			ConnectLine(limbs.RightUpperLeg_RightLowerLeg, Vector2.new(RUL.X, RUL.Y), Vector2.new(RLL.X, RLL.Y))
-			ConnectLine(limbs.RightLowerLeg_RightFoot, Vector2.new(RLL.X, RLL.Y), Vector2.new(RF.X, RF.Y))
+			ConnectLine(limbs.Head_UpperTorso, Vector2.new(H.X,H.Y), Vector2.new(UT.X,UT.Y))
+			ConnectLine(limbs.UpperTorso_LowerTorso, Vector2.new(UT.X,UT.Y), Vector2.new(LT.X,LT.Y))
+			ConnectLine(limbs.UpperTorso_LeftUpperArm, Vector2.new(UT.X,UT.Y), Vector2.new(LUA.X,LUA.Y))
+			ConnectLine(limbs.LeftUpperArm_LeftLowerArm, Vector2.new(LUA.X,LUA.Y), Vector2.new(LLA.X,LLA.Y))
+			ConnectLine(limbs.LeftLowerArm_LeftHand, Vector2.new(LLA.X,LLA.Y), Vector2.new(LH.X,LH.Y))
+			ConnectLine(limbs.UpperTorso_RightUpperArm, Vector2.new(UT.X,UT.Y), Vector2.new(RUA.X,RUA.Y))
+			ConnectLine(limbs.RightUpperArm_RightLowerArm, Vector2.new(RUA.X,RUA.Y), Vector2.new(RLA.X,RLA.Y))
+			ConnectLine(limbs.RightLowerArm_RightHand, Vector2.new(RLA.X,RLA.Y), Vector2.new(RH.X,RH.Y))
+			ConnectLine(limbs.LowerTorso_LeftUpperLeg, Vector2.new(LT.X,LT.Y), Vector2.new(LUL.X,LUL.Y))
+			ConnectLine(limbs.LeftUpperLeg_LeftLowerLeg, Vector2.new(LUL.X,LUL.Y), Vector2.new(LLL.X,LLL.Y))
+			ConnectLine(limbs.LeftLowerLeg_LeftFoot, Vector2.new(LLL.X,LLL.Y), Vector2.new(LF.X,LF.Y))
+			ConnectLine(limbs.LowerTorso_RightUpperLeg, Vector2.new(LT.X,LT.Y), Vector2.new(RUL.X,RUL.Y))
+			ConnectLine(limbs.RightUpperLeg_RightLowerLeg, Vector2.new(RUL.X,RUL.Y), Vector2.new(RLL.X,RLL.Y))
+			ConnectLine(limbs.RightLowerLeg_RightFoot, Vector2.new(RLL.X,RLL.Y), Vector2.new(RF.X,RF.Y))
 		end
 
 		SetVisible(mastertoggle.value)
@@ -154,10 +161,4 @@ for _, v in pairs(game.Players:GetPlayers()) do
 	end
 end
 
-game.Players.PlayerAdded:Connect(function(newplr)
-	if newplr ~= Player then
-		ESPs[newplr] = DrawESP(newplr)
-	end
-end)
-
-return { ESPs = ESPs, MasterToggle = mastertoggle }
+game.Players.PlayerAdde
