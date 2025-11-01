@@ -90,6 +90,11 @@ local function calcOffset(part)
     return hrpPos.Y - partPos.Y
 end
 
+local function project(part)
+	if not part then return Vector3.zero end
+	local pos, onScreen = Camera:WorldToViewportPoint(part.Position)
+	return Vector2.new(pos.X, pos.Y), onScreen
+end
 
 	-- Updater
 	local conn
