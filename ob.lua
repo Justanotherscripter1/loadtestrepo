@@ -91,12 +91,14 @@ local function calcOffset(part)
     local partPos = Camera:WorldToViewportPoint(part.Position)
     return hrpPos.Y - partPos.Y
 end
-
 local function project(part)
 	if not part then return Vector3.zero end
 	local pos, onScreen = Camera:WorldToViewportPoint(part.Position)
-	return Vector2.new(pos.X, pos.Y), onScreen
+	local distance = (Camera.CFrame.Position - part.Position).Magnitude
+	pos = Vector2.new(pos.X, pos.Y - (distance / 25)) -- tweak divisor if offset too high/low
+	return pos, onScreen
 end
+
 
 	-- Updater
 	local conn
