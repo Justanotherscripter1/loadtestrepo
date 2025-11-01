@@ -26,10 +26,12 @@ end
 --// function to connect two 2D points with a GUI line
 local function ConnectLine(line, from, to)
 	local dist = (to - from).Magnitude
-	line.Size = UDim2.new(0, dist, 0, 2)
-	line.Position = UDim2.new(0, (from.X + to.X) / 2, 0, (from.Y + to.Y) / 2)
+	local midpoint = (from + to) / 2
+	line.Size = UDim2.fromOffset(dist, 2)
+	line.Position = UDim2.fromOffset(midpoint.X, midpoint.Y)
 	line.Rotation = math.deg(math.atan2(to.Y - from.Y, to.X - from.X))
 end
+
 
 --// function to build ESP for a player
 local function DrawESP(plr)
