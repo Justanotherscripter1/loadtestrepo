@@ -97,7 +97,7 @@ local function project(part)
     local fov = Camera.FieldOfView * math.rad(0.5) -- Half of the FOV in radians
 
 	-- Calculate the vertical offset based on perspective projection
-	local verticalOffset = (distance * math.tan(fov) * 0.5) / distance  -- Adjust multiplier as needed
+	local verticalOffset = (distance * math.tan(fov) * 0.25) / distance  -- Adjust multiplier as needed
 
     pos = Vector2.new(pos.X, pos.Y - verticalOffset) -- Apply the vertical offset
 
